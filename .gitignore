@@ -4,3 +4,4 @@
 TEST-*.xml
 .DS_Store
 *.beam
+.rebar

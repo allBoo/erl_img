@@ -202,7 +202,7 @@ component_vh(Comps, IMG) ->
     component_vh(Comps, IMG, 0, 0).
 
 component_vh([{Format,_DC,_AC}|Cs], IMG, H, V) ->
-    io:format("component_vh: ~p\n", [{component,Format}]),
+    ?dbg("component_vh: ~p\n", [{component,Format}]),
     {_Q,H0,V0} = erl_img:attribute(IMG, {component,Format}, undefined),
     component_vh(Cs, IMG, max(H,H0), max(V,V0));
 component_vh([], _IMG, H, V) ->
@@ -281,7 +281,7 @@ init_sos(<<N,Bin/binary>>, Ei) ->
 read_sos(JFd, SOS, Ei) ->
     Dcs0 = lists:duplicate(length(SOS#sos.def), 0),
     {JFd1,Data,_Dcs1,_N} = read_mcu_h(JFd,SOS#sos.h,Dcs0,0,SOS,[]),
-    io:format("Convert to RGB\n",[]),
+    ?dbg("Convert to RGB\n",[]),
     Width = Ei#erl_image.width,
     Height = Ei#erl_image.height,
     Format = r8g8b8,
@@ -532,16 +532,16 @@ jfd_decode_bits_(<<1:1,Bits/bits>>, {_,R}, Ds, JFd) ->
 jfd_decode_bits_(<<>>, H, Ds, JFd) when is_tuple(H) ->
     JFd1 = jfd_load_bits(JFd#jfd{bits=(<<>>)},8),
     if bit_size(JFd1#jfd.bits) == 0 ->
-	    io:format("~s => (<<>>)\n", [reverse(Ds)]),
+	    ?dbg("~s => (<<>>)\n", [reverse(Ds)]),
 	    erlang:error({error, not_a_code});
        true ->
 	    jfd_decode_bits_(JFd1#jfd.bits, H, Ds, JFd1)
     end;
 jfd_decode_bits_(Bits, Code, _Ds, JFd) when is_integer(Code) ->
-    %% io:format("~s => ~w\n", [reverse(_Ds), Code]),
+    %% ?dbg("~s => ~w\n", [reverse(_Ds), Code]),
     {JFd#jfd {bits=Bits }, Code};
 jfd_decode_bits_(Bits, Code, Ds, _JFd) ->
-    io:format("~s => ~w (~w)\n", [reverse(Ds), Code, Bits]),
+    ?dbg("~s => ~w (~w)\n", [reverse(Ds), Code, Bits]),
     erlang:error({error, not_a_code}).
 
 %% Byte align the the bit stream (ditch the bits)
@@ -1079,14 +1079,14 @@ forfold_dec(_I,_N,_S,_Fun,Acc) ->
 
 %% print record
 emit_record(R, Fs) ->
-    io:format("#~s {", [element(1, R)]),
+    ?dbg("#~s {", [element(1, R)]),
     emit_fields(2, R, Fs),
-    io:format("}.\n", []).
+    ?dbg("}.\n", []).
 
 emit_fields(I, R, [F]) ->
-    io:format("  ~s = ~w\n", [F, element(I,R)]);
+    ?dbg("  ~s = ~w\n", [F, element(I,R)]);
 emit_fields(I, R, [F|Fs]) ->
-    io:format("  ~s = ~w,\n", [F, element(I,R)]),
+    ?dbg("  ~s = ~w,\n", [F, element(I,R)]),
     emit_fields(I+1, R, Fs);
 emit_fields(_I, _R, []) ->
     ok.
@@ -1100,15 +1100,15 @@ emit_8x8(DQT, Fmt) ->
     En = lists:max(lists:map(fun(F) -> iolist_size(F) end, L1)),
     Fmt2 = "~"++integer_to_list(En)++"s",
 
-    io:format("[", []), emit_es(L1,Fmt2,0), io:format("]\n", []).
+    ?dbg("[", []), emit_es(L1,Fmt2,0), ?dbg("]\n", []).
 
 emit_es([E],Fmt,_) ->
-    io:format(Fmt, [E]);
+    ?dbg(Fmt, [E]);
 emit_es([E|Es],Fmt,I) when I > 0, I rem 8 == 0 ->
-    io:format("\n "++Fmt++",", [E]),
+    ?dbg("\n "++Fmt++",", [E]),
     emit_es(Es,Fmt,I+1);
 emit_es([E|Es],Fmt,I) ->
-    io:format(Fmt++",", [E]),
+    ?dbg(Fmt++",", [E]),
     emit_es(Es,Fmt,I+1).
 
 
@@ -1120,7 +1120,7 @@ emit_dht(DHT) ->
 emit_ht(x, _Ds) ->  %% not used
     ok;
 emit_ht(Code, Ds) when is_integer(Code) ->
-    io:format("<<2#~s:~w,Bs/bits>> -> ~w;\n", [reverse(Ds), length(Ds), Code]);
+    ?dbg("<<2#~s:~w,Bs/bits>> -> ~w;\n", [reverse(Ds), length(Ds), Code]);
 emit_ht({L,R}, Ds) ->
     emit_ht(L, [$0|Ds]),
     emit_ht(R, [$1|Ds]).

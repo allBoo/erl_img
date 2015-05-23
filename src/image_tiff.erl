@@ -5,7 +5,7 @@
 
 -module(image_tiff).
 
--include_lib("erl_img.hrl").
+-include("erl_img.hrl").
 -include("tiff.hrl").
 
 -include("api.hrl").
@@ -201,11 +201,14 @@ collect_fun(_Fd, T, St) ->
 			St#erl_image { attributes = As }
 	end.
 
-
+-ifdef(debug).
 dump_fun(_Fd, T, St) ->
 	Key = decode_tag(T#tiff_entry.tag),
-	io:format("~s ~s ~w\n", [Key,T#tiff_entry.type,T#tiff_entry.value]),
+	?dbg("~s ~s ~w\n", [Key, T#tiff_entry.type, T#tiff_entry.value]),
 	St.
+-else.
+dump_fun(_Fd, _T, St) -> St.
+-endif.
 
 dump_binary(Bin) when is_binary(Bin) ->
 	scan_binary(Bin, fun dump_fun/3, ok).
@@ -238,10 +241,10 @@ scan_binary(Bin, Callback, St) ->
 scan_fd(Fd, Callback, St) ->
 	case file:read(Fd, 8) of
 		{ok, <<?II:16,?MAGIC:16/little,Offset:32/little>>} ->
-			%% io:format("TIFF: LITTLE endian\n"),
+			%% ?dbg("TIFF: LITTLE endian\n"),
 			scan_ifd(Fd, [$0], Offset, little, Callback, St);
 		{ok, <<?MM:16,?MAGIC:16/big,Offset:32/big>>} ->
-			%% io:format("TIFF: BIG endian\n"),
+			%% ?dbg("TIFF: BIG endian\n"),
 			scan_ifd(Fd, [$0], Offset, big, Callback, St);
 		{ok,_} ->
 			{error, bad_magic};
@@ -579,7 +582,7 @@ undo_differencing4(Data, Width) ->
 undo_differencing4(W, W, Rest, _,_,_,_,Ack) ->
 	undo_differencing4(0,W, Rest, 0,0,0,0,Ack);
 undo_differencing4(C, W, [R,G,B,A|Rest], AR,AG,AB,AA, Ack) ->
-	%% io:format("undo ~p ~n", [[{R,G,B,A}, {AR,AG,AB,AA}]]),
+	%% ?dbg("undo ~p ~n", [[{R,G,B,A}, {AR,AG,AB,AA}]]),
 	RR = (R + AR) rem 256,
 	RG = (G + AG) rem 256,
 	RB = (B + AB) rem 256,

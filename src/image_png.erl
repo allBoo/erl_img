@@ -5,7 +5,7 @@
 
 -module(image_png).
 
--include_lib("erl_img.hrl").
+-include("erl_img.hrl").
 -include("api.hrl").
 
 -include("dbg.hrl").
@@ -251,7 +251,7 @@ write_info(Fd, IMG, Z) ->
     file:write(Fd, <<?MAGIC>>),
     ColorType = color_type(IMG#erl_image.format),
     write_chunk_crc(Fd, ?IHDR, <<
-        (IMG#erl_image.width):32, 
+        (IMG#erl_image.width):32,
         (IMG#erl_image.height):32,
         (IMG#erl_image.depth):8,
         ColorType,
@@ -501,7 +501,7 @@ reconstruct(4, Bpp, Row,Prior) -> reconstruct_paeth(Row,Prior,Bpp).
 %% See: http://www.w3.org/TR/PNG/#9Filter-types
 
 %% Filt(x) = Orig(x) - Orig(a)
-%% Recon(x) = Filt(x) + Recon(a)  
+%% Recon(x) = Filt(x) + Recon(a)
 %%
 reconstruct_sub(Sub,_Prior,Bpp) ->
     Rn = lists:duplicate(Bpp, 0),
