@@ -220,17 +220,17 @@ dir_list([], _Dir) ->
 crop(#erl_image{ width = Width, height = Height } = IMG, Width, Height, 0, 0) ->
     IMG;
 crop(IMG, Width, Height, XOffset, YOffset) when YOffset > 0 ->
-    IMG1 = IMG#erl_image{ 
+    IMG1 = IMG#erl_image{
         pixmaps = lists:foldr(fun
                 (PixMap, Acc) when PixMap#erl_pixmap.top + PixMap#erl_pixmap.height < YOffset ->
                     Acc;
                 (PixMap, Acc) when PixMap#erl_pixmap.top >= YOffset ->
                     [PixMap#erl_pixmap{ top = PixMap#erl_pixmap.top - YOffset }|Acc];
                 (PixMap, Acc) ->
-                    [PixMap#erl_pixmap{ 
+                    [PixMap#erl_pixmap{
                             pixels = lists:map(fun({RowNum, Data}) ->
                                         {RowNum - YOffset, Data}
-                                end, lists:nthtail(YOffset - PixMap#erl_pixmap.top, 
+                                end, lists:nthtail(YOffset - PixMap#erl_pixmap.top,
                                     lists:sort(fun({RowA, _}, {RowB, _}) ->
                                                 RowA < RowB
                                         end, PixMap#erl_pixmap.pixels))),
@@ -240,14 +240,14 @@ crop(IMG, Width, Height, XOffset, YOffset) when YOffset > 0 ->
         height = IMG#erl_image.height - YOffset},
     crop(IMG1, Width, Height, XOffset, 0);
 crop(IMG, Width, Height, XOffset, YOffset) when Height < IMG#erl_image.height ->
-    IMG1 = IMG#erl_image{ 
+    IMG1 = IMG#erl_image{
         pixmaps = lists:foldr(fun
                 (PixMap, Acc) when PixMap#erl_pixmap.top >= Height ->
                     Acc;
                 (PixMap, Acc) when PixMap#erl_pixmap.top + PixMap#erl_pixmap.height =< Height ->
                     [PixMap|Acc];
                 (PixMap, Acc) ->
-                    [PixMap#erl_pixmap{ 
+                    [PixMap#erl_pixmap{
                             pixels = lists:sublist(lists:sort(fun({RowA, _}, {RowB, _}) ->
                                             RowA < RowB
                                     end, PixMap#erl_pixmap.pixels), 0, Height - PixMap#erl_pixmap.top),
@@ -265,8 +265,8 @@ crop(IMG, Width, Height, XOffset, YOffset) when XOffset > 0 ->
                 (PixMap, Acc) ->
                     [PixMap#erl_pixmap{
                             pixels = lists:map(fun({RowNum, Data}) ->
-                                        {RowNum, binary:part(Data, 
-                                                IMG#erl_image.bytes_pp * XOffset, 
+                                        {RowNum, binary:part(Data,
+                                                IMG#erl_image.bytes_pp * XOffset,
                                                 byte_size(Data) - IMG#erl_image.bytes_pp * XOffset)}
                                 end, PixMap#erl_pixmap.pixels),
                             width = PixMap#erl_pixmap.width - (XOffset - PixMap#erl_pixmap.left),
@@ -294,7 +294,7 @@ crop(IMG, Width, Height, XOffset, YOffset) when Width < IMG#erl_image.width ->
 sort_rows(IMG) ->
     IMG#erl_image{
         pixmaps = lists:map(fun(Pixmap) ->
-                    Pixmap#erl_pixmap{ 
+                    Pixmap#erl_pixmap{
                         pixels = lists:sort(fun({RowA, _}, {RowB, _}) ->
                                     RowA < RowB
                             end, Pixmap#erl_pixmap.pixels)}
@@ -323,7 +323,7 @@ interpolate_cubic(X, A, B, C, D) ->
     B + 0.5 * X * (C - A + X * (2*A - 5*B + 4*C - D + X * (3*(B-C) + D - A))).
 
 interpolate_bicubic({X, Y}, {A1, B1, C1, D1}, {A2, B2, C2, D2}, {A3, B3, C3, D3}, {A4, B4, C4, D4}) ->
-    interpolate_cubic(Y, 
+    interpolate_cubic(Y,
         interpolate_cubic(X, A1, B1, C1, D1),
         interpolate_cubic(X, A2, B2, C2, D2),
         interpolate_cubic(X, A3, B3, C3, D3),
@@ -331,7 +331,7 @@ interpolate_bicubic({X, Y}, {A1, B1, C1, D1}, {A2, B2, C2, D2}, {A3, B3, C3, D3}
 
 get_pixel_bytes(IMG, Rows, X, Y) ->
     lists:foldr(fun
-            ({PixMap, _}, Pixel) when X < PixMap#erl_pixmap.left; 
+            ({PixMap, _}, Pixel) when X < PixMap#erl_pixmap.left;
                                  X >= PixMap#erl_pixmap.width + PixMap#erl_pixmap.left;
                                  Y < PixMap#erl_pixmap.top;
                                  Y >= PixMap#erl_pixmap.height + PixMap#erl_pixmap.top ->
@@ -448,7 +448,7 @@ scale(IMG, XScaleFactor, YScaleFactor) ->
     NewHeight = round(YScaleFactor * IMG#erl_image.height),
     NewWidth = round(XScaleFactor * IMG#erl_image.width),
     IMG#erl_image{
-        pixmaps = [#erl_pixmap{ 
+        pixmaps = [#erl_pixmap{
                 left = 0,
                 top = 0,
                 width = NewWidth,

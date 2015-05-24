@@ -13,6 +13,10 @@ test:
 	@mkdir -p .eunit
 	@$(REBAR) eunit
 
+ct:
+	@$(REBAR) compile
+	@$(REBAR) ct
+
 clean:
 	@$(REBAR) clean
 
