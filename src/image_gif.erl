@@ -9,7 +9,7 @@
 
 -include("api.hrl").
 
-%% -define(debug, true).
+% -define(debug, meaningless).
 -include("dbg.hrl").
 
 -import(lists, [reverse/1]).

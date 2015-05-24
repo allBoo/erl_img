@@ -17,7 +17,7 @@
 -include("tiff.hrl").
 -include("img_exif.hrl").
 
--define(debug, false).
+% -define(debug, meaningless).
 -include("dbg.hrl").
 -ifdef(debug).
 -define(dbg_emit_record(T,R), emit_record(R, record_info(fields, T))).
@@ -541,7 +541,7 @@ jfd_decode_bits_(Bits, Code, _Ds, JFd) when is_integer(Code) ->
     %% ?dbg("~s => ~w\n", [reverse(_Ds), Code]),
     {JFd#jfd {bits=Bits }, Code};
 jfd_decode_bits_(Bits, Code, Ds, _JFd) ->
-    ?dbg("~s => ~w (~w)\n", [reverse(Ds), Code, Bits]),
+    io:format("~s => ~w (~w)\n", [reverse(Ds), Code, Bits]),
     erlang:error({error, not_a_code}).
 
 %% Byte align the the bit stream (ditch the bits)
@@ -1083,6 +1083,7 @@ emit_record(R, Fs) ->
     emit_fields(2, R, Fs),
     ?dbg("}.\n", []).
 
+-ifdef(debug).
 emit_fields(I, R, [F]) ->
     ?dbg("  ~s = ~w\n", [F, element(I,R)]);
 emit_fields(I, R, [F|Fs]) ->
@@ -1090,6 +1091,14 @@ emit_fields(I, R, [F|Fs]) ->
     emit_fields(I+1, R, Fs);
 emit_fields(_I, _R, []) ->
     ok.
+-else.
+emit_fields(_I, _R, [_F]) ->
+    ok;
+emit_fields(I, R, [_F|Fs]) ->
+    emit_fields(I+1, R, Fs);
+emit_fields(_I, _R, []) ->
+    ok.
+-endif.
 
 %% emit 8x8 matrix like format
 emit_8x8(DQT) ->
@@ -1102,6 +1111,7 @@ emit_8x8(DQT, Fmt) ->
 
     ?dbg("[", []), emit_es(L1,Fmt2,0), ?dbg("]\n", []).
 
+-ifdef(debug).
 emit_es([E],Fmt,_) ->
     ?dbg(Fmt, [E]);
 emit_es([E|Es],Fmt,I) when I > 0, I rem 8 == 0 ->
@@ -1110,13 +1120,21 @@ emit_es([E|Es],Fmt,I) when I > 0, I rem 8 == 0 ->
 emit_es([E|Es],Fmt,I) ->
     ?dbg(Fmt++",", [E]),
     emit_es(Es,Fmt,I+1).
-
+-else.
+emit_es([_E],_Fmt,_I) ->
+    ok;
+emit_es([_E|Es],Fmt,I) when I > 0, I rem 8 == 0 ->
+    emit_es(Es,Fmt,I+1);
+emit_es([_E|Es],Fmt,I) ->
+    emit_es(Es,Fmt,I+1).
+-endif.
 
 %% emit huffman decoder
 %%   bitseq => value
 emit_dht(DHT) ->
     emit_ht(DHT,[]).
 
+-ifdef(debug).
 emit_ht(x, _Ds) ->  %% not used
     ok;
 emit_ht(Code, Ds) when is_integer(Code) ->
@@ -1124,6 +1142,15 @@ emit_ht(Code, Ds) when is_integer(Code) ->
 emit_ht({L,R}, Ds) ->
     emit_ht(L, [$0|Ds]),
     emit_ht(R, [$1|Ds]).
+-else.
+emit_ht(x, _Ds) ->  %% not used
+    ok;
+emit_ht(Code, _Ds) when is_integer(Code) ->
+    ok;
+emit_ht({L,R}, Ds) ->
+    emit_ht(L, [$0|Ds]),
+    emit_ht(R, [$1|Ds]).
+-endif.
 
 %% print bits
 format_bits(Bits) ->
