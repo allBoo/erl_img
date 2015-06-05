@@ -26,10 +26,10 @@ erl_img:load("/path/to/image.ext") -> {ok, IMG#erl_image}
 erl_img:mime_type(IMG) -> "image/something"
 
 % Scale
-IMG1 = erl_image:scale(IMG, 0.5) % scale factor
+IMG1 = erl_img:scale(IMG, 0.5) % scale factor
 
 % Crop
-IMG2 = erl_image:crop(IMG1,
+IMG2 = erl_img:crop(IMG1,
         IMG1#erl_image.width / 2,  % new width
         IMG1#erl_image.height / 2, % new height
         IMG1#erl_image.width / 4,  % x offset
@@ -85,4 +85,5 @@ palette*           R          RW        R    R
 TODO
 ----
 
-Very limited coverage in the eunit tests. Need images and a lot more tests.
+* `erl_img:scale/2` is currently producing garbled images.
+* Very limited coverage in the eunit tests. Need images and a lot more tests.
