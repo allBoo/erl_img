@@ -25,12 +25,10 @@ scale_test(Config) ->
     DataDir = ?config(data_dir, Config),
     Filename = filename:join(DataDir, "IMG_5745.JPG"),
     {ok, Image} = erl_img:load(Filename),
-    % TODO: test fails, see CT logs for stack trace
     Thumbnail = erl_img:scale(Image, 0.46875),
     ?assertEqual(240, Thumbnail#erl_image.width),
     ?assertEqual(180, Thumbnail#erl_image.height),
-    % TODO: this also fails
     Biggered = erl_img:scale(Image, 2.0),
-    ?assertEqual(768, Biggered#erl_image.width),
-    ?assertEqual(1024, Biggered#erl_image.height),
+    ?assertEqual(1024, Biggered#erl_image.width),
+    ?assertEqual(768, Biggered#erl_image.height),
     ok.
