@@ -86,4 +86,6 @@ TODO
 ----
 
 * `erl_img:scale/2` is currently producing garbled images.
+    - It is using bicubic interpoliation, perhaps it is not exactly right
+    - Reference: http://en.wikipedia.org/wiki/Bicubic_interpolation
 * Very limited coverage in the eunit tests. Need images and a lot more tests.
