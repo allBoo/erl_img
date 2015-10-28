@@ -3,10 +3,10 @@
 %%% Description : Undefined format catch module
 %%% Created :  5 Mar 2003 by Tony Rogvall <tony@bix.hemma.se>
 
--module(image_undef).
+-module(erl_img_image_undef).
 
 -include_lib("erl_img.hrl").
--include("api.hrl").
+-include("erl_img_api.hrl").
 
 magic(_) -> false.
 

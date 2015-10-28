@@ -3,11 +3,11 @@
 %%% Description : BMP Files
 %%% Created :  5 Mar 2003 by Tony Rogvall <tony@bix.hemma.se>
 
--module(image_bmp).
+-module(erl_img_image_bmp).
 
 -include_lib("erl_img.hrl").
--include("api.hrl").
--include("dbg.hrl").
+-include("erl_img_api.hrl").
+-include("erl_img_dbg.hrl").
 
 -import(lists, [reverse/1]).
 

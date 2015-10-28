@@ -3,11 +3,11 @@
 %%% Description : Utils for decoding Exif tags
 %%% Created :  6 Mar 2003 by Tony Rogvall <tony@a55.hemma.se>
 
--module(exif).
+-module(erl_img_exif).
 
 -export([decode_tag/1]).
 
--include("exif.hrl").
+-include("erl_img_exif.hrl").
 
 decode_tag(Tag) when is_integer(Tag) ->
     case Tag of

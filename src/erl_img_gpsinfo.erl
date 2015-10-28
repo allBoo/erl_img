@@ -1,16 +1,17 @@
+%%% coding: latin-1
 %%% File    : gpsinfo.erl
 %%% Author  : Davide Marquês <nesrait@gmail.com>
 %%% Description : Utils for decoding Exif GPSInfo tags
 %%% Created :  20 Aug 2009 by Davide Marquês <nesrai@gmail.com>
 
--module(gpsinfo).
+-module(erl_img_gpsinfo).
 
 -export([decode_tag/1, collect_gpsinfo/3]).
 -export([latitude/1, longitude/1]).
 
--include("gpsinfo.hrl").
--include("tiff.hrl").
--include("dbg.hrl").
+-include("erl_img_gpsinfo.hrl").
+-include("erl_img_tiff.hrl").
+-include("erl_img_dbg.hrl").
 
 collect_gpsinfo(_Fd, T, Info) ->
     Key = decode_tag(T#tiff_entry.tag),

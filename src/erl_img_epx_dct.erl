@@ -1,21 +1,21 @@
 %%
 %% DCT/IDCT Discrete Cosine Transform and its inverse
 %%
--module(epx_dct).
+-module(erl_img_epx_dct).
 
 -export([forward_8x8/1,
-	 inverse_8x8/1]).
+         inverse_8x8/1]).
 
 -export([forward_8x8_0/1,
-	 forward_8x8_1/1,
-	 inverse_8x8_0/1,
-	 inverse_8x8_1/1]).
+         forward_8x8_1/1,
+         inverse_8x8_0/1,
+         inverse_8x8_1/1]).
 
 -export([dct_matrix/1, dct_transposed_matrix/1]).
 
 -export([transpose/1, multiply/2]).
 
--import(lists, [map/2, reverse/1]).	 
+-import(lists, [map/2, reverse/1]).     
 
 %%
 %% Calulate the FDCT over a 8x8 matrix in row order format
@@ -68,8 +68,8 @@ forward_8x8_0(U,V,A,Fy,F) ->
     
 forward_8x8_xy(U,V,X,Y,[Axy|Ay],A, Fxy) ->
     Fxy1 = Fxy+Axy*
-	math:cos(?PI*((2*X+1)*U)/16)*
-	math:cos(?PI*((2*Y+1)*V)/16),
+    math:cos(?PI*((2*X+1)*U)/16)*
+    math:cos(?PI*((2*Y+1)*V)/16),
     forward_8x8_xy(U,V,X+1,Y,Ay,A,Fxy1);
 forward_8x8_xy(U,V,_X,Y,[],[Ay|A], Fxy) ->
     forward_8x8_xy(U,V,0,Y+1,Ay,A,Fxy);
@@ -112,8 +112,8 @@ inverse_8x8_0(X,Y,F,Ay,A) ->
     
 inverse_8x8_uv(X,Y,U,V,[Fuv|Fu],F, I) ->
     I1 = I+c(U)*c(V)*Fuv*
-	math:cos(?PI/16*((2*X+1)*U))*
-	math:cos(?PI/16*((2*Y+1)*V)),
+    math:cos(?PI/16*((2*X+1)*U))*
+    math:cos(?PI/16*((2*Y+1)*V)),
     inverse_8x8_uv(X,Y,U+1,V,Fu,F, I1);
 inverse_8x8_uv(X,Y,_U,V,[],[Fu|F], I) ->
     inverse_8x8_uv(X,Y,0,V+1,Fu,F,I);
@@ -141,14 +141,14 @@ dct_matrix(8) ->
 dct_matrix(N) ->
     Seq = lists:seq(0, N-1),
     [ [c(U,N)*math:cos(math:pi()*(((2*X+1)*U)/(2*N))) ||
-	  X <- Seq] ||	U <- Seq].
+      X <- Seq] ||    U <- Seq].
 
 dct_transposed_matrix(8) ->
     dct_transposed_matrix_8();
 dct_transposed_matrix(N) ->
     Seq = lists:seq(0, N-1),
     [ [c(U,N)*math:cos(math:pi()*(((2*X+1)*U)/(2*N))) ||
-	  U <- Seq] || X <- Seq].
+      U <- Seq] || X <- Seq].
 
 %% Matrix multiply 
 multiply([], _B) ->
@@ -179,7 +179,7 @@ transpose([R|Rs], At) ->
     transpose(Rs, At1);
 transpose([], At) ->
     map(fun(Row) -> reverse(Row) end, At).
-		
+
 consl([E|Es], [Row|Rs]) ->
     [[E|Row] | consl(Es, Rs)];
 consl([], []) ->

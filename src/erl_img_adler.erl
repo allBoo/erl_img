@@ -3,7 +3,7 @@
 %%% Description : adler checksum
 %%% Created :  8 Apr 2003 by Tony Rogvall <tony@bit.hemma.se>
 
--module(adler).
+-module(erl_img_adler).
 
 -export([adler32/1, adler32/2]).
 

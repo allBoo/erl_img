@@ -3,12 +3,12 @@
 %%% Description : PNG Files
 %%% Created :  5 Mar 2003 by Tony Rogvall <tony@bix.hemma.se>
 
--module(image_png).
+-module(erl_img_image_png).
 
 -include_lib("erl_img.hrl").
--include("api.hrl").
+-include("erl_img_api.hrl").
 
--include("dbg.hrl").
+-include("erl_img_dbg.hrl").
 
 -import(lists, [reverse/1]).
 -import(erl_img, [attribute/3, set_attribute/3]).
@@ -54,7 +54,7 @@ scan_info(Fd, IMG, First) ->
             Z = zlib:open(),
             Res = scan_info(Fd, IMG, First, Type, Length, Z),
             zlib:close(Z),
-			Res;
+            Res;
         Error ->
             Error
     end.

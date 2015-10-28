@@ -3,11 +3,11 @@
 %%% Description : XPM image processing
 %%% Created :  5 Mar 2003 by Tony Rogvall <tony@bix.hemma.se>
 
--module(image_x_xpixmap).
+-module(erl_img_image_x_xpixmap).
 
 -include_lib("erl_img.hrl").
--include("api.hrl").
--include("dbg.hrl").
+-include("erl_img_api.hrl").
+-include("erl_img_dbg.hrl").
 
 -export([scan_xpm/1]).
 

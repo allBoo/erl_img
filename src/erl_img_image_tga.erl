@@ -7,14 +7,14 @@
 %% implement. I decided to implement it to be able to render out images when
 %% testing.
 
--module(image_tga).
+-module(erl_img_image_tga).
 
 -include("erl_img.hrl").
 
--include("api.hrl").
+-include("erl_img_api.hrl").
 
 %% -define(debug, true).
--include("dbg.hrl").
+-include("erl_img_dbg.hrl").
 
 -import(lists, [reverse/1]).
 

@@ -5,15 +5,14 @@
 -ifndef(__ERL_IMG_HRL__).
 -define(__ERL_IMG_HRL__, true).
 
--define(IMAGE_JPEG,      image_jpeg).
--define(IMAGE_TIFF,      image_tiff).
--define(IMAGE_GIF,       image_gif).
--define(IMAGE_PNG,       image_png).
--define(IMAGE_BMP,       image_bmp).
--define(IMAGE_X_XPIXMAP, image_x_xpixmap).
--define(IMAGE_UNDEF,     image_undef).
--define(IMAGE_TGA,       image_tga).
--define(VIDEO_MPEG,      video_mpeg).
+-define(IMAGE_JPEG,      erl_img_image_jpeg).
+-define(IMAGE_TIFF,      erl_img_image_tiff).
+-define(IMAGE_GIF,       erl_img_image_gif).
+-define(IMAGE_PNG,       erl_img_image_png).
+-define(IMAGE_BMP,       erl_img_image_bmp).
+-define(IMAGE_X_XPIXMAP, erl_img_image_x_xpixmap).
+-define(IMAGE_UNDEF,     erl_img_image_undef).
+-define(IMAGE_TGA,       erl_img_image_tga).
 
 -define(PAD_Len(L,A), (((A)-((L) rem (A))) rem (A))).
 
@@ -38,8 +37,7 @@
                       ?IMAGE_PNG,
                       ?IMAGE_BMP,
                       ?IMAGE_X_XPIXMAP,
-                      ?IMAGE_TGA,
-                      ?VIDEO_MPEG]).
+                      ?IMAGE_TGA]).
 
 -record(erl_pixmap,
         {

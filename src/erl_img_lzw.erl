@@ -8,7 +8,7 @@
 %%% lzw derived from wings e3d__tiff updated and fixed to
 %%%  handle gif and tiff fillorder=2
 %%%
--module(lzw).
+-module(erl_img_lzw).
 
 -export([decompress_tiff/1,
          decompress_tiff/3,
@@ -28,7 +28,7 @@
 
 -include("erl_img.hrl").
 
--include("dbg.hrl").
+-include("erl_img_dbg.hrl").
 
 -record(z,
         {

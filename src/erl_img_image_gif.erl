@@ -3,14 +3,14 @@
 %%% Description : GIF image processing
 %%% Created :  5 Mar 2003 by Tony Rogvall <tony@bix.hemma.se>
 
--module(image_gif).
+-module(erl_img_image_gif).
 
 -include("erl_img.hrl").
 
--include("api.hrl").
+-include("erl_img_api.hrl").
 
 %% -define(debug, true).
--include("dbg.hrl").
+-include("erl_img_dbg.hrl").
 
 -import(lists, [reverse/1]).
 
@@ -420,7 +420,7 @@ write_pixels(Fd, Pixels, Width, Height, Interlaced, Inline) ->
                 %% FIXME: check that all pixels are 7 bit !!!!!
                 {7,<<128, Bin/binary, 129>>};
            true ->
-                lzw:compress_gif(Bin)
+                erl_img_lzw:compress_gif(Bin)
         end,
     ?dbg("compress: orig_size=~w, size=~w codesize=~w\n",
          [size(Bin), size(Bin1), LZWCodeSize]),
@@ -513,7 +513,7 @@ read_image(Fd, LZWCodeSize, _Width, _Height) ->
     case read_blocks(Fd) of
         {ok,Bin} ->
             ?dbg("LZWCodeSize=~p compressed=~p\n", [LZWCodeSize, size(Bin)]),
-            {ok,lzw:decompress_gif(Bin, LZWCodeSize)};
+            {ok, erl_img_lzw:decompress_gif(Bin, LZWCodeSize)};
         Error ->
             Error
     end.
