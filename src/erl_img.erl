@@ -283,8 +283,8 @@ crop(IMG, Width, Height, XOffset, YOffset) when Width < IMG#erl_image.width ->
                     [PixMap|Acc];
                 (PixMap, Acc) ->
                     [PixMap#erl_pixmap{
-                            pixels = lists:map(fun({_RowNum, Data}) ->
-                                        binary:part(Data, 0, (Width - PixMap#erl_pixmap.left) * IMG#erl_image.bytes_pp)
+                            pixels = lists:map(fun({RowNum, Data}) ->
+                                        {RowNum, binary:part(Data, 0, (Width - PixMap#erl_pixmap.left) * IMG#erl_image.bytes_pp)}
                                 end, PixMap#erl_pixmap.pixels),
                             width = Width - PixMap#erl_pixmap.left } | Acc]
             end, [], IMG#erl_image.pixmaps),
