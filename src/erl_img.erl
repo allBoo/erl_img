@@ -301,23 +301,27 @@ sort_rows(IMG) ->
             end, IMG#erl_image.pixmaps)
     }.
 
-rows_for_y(Y, IMG) -> lists:map(fun(PixMap) ->
-                {_, Data} = lists:nth(Y - PixMap#erl_pixmap.top + 1, PixMap#erl_pixmap.pixels),
+rows_for_y(Y, IMG) ->
+    lists:map(fun(PixMap) ->
+                N = min(Y - PixMap#erl_pixmap.top + 1, length(PixMap#erl_pixmap.pixels)),
+                {_, Data} = lists:nth(N, PixMap#erl_pixmap.pixels),
                 Data
         end, IMG#erl_image.pixmaps).
 
-pmap2(F, L) -> await2(spawn_jobs(F, L)).
+parallel_map(F, L) ->
+    await(spawn_jobs(F, L)).
+
 spawn_jobs(F, L) ->
     Parent = self(),
     [spawn(fun() -> Parent ! {self(),catch {ok,F(X)}} end) || X <- L].
-await2([H|T]) ->
+await([H|T]) ->
     receive
-        {H, {ok, Res}} -> [Res | await2(T)]; {H, {'EXIT',_} = Err} ->
+        {H, {ok, Res}} -> [Res | await(T)]; {H, {'EXIT',_} = Err} ->
             [exit(Pid,kill) || Pid <- T],
             [receive {P,_} -> d_ after 0 -> i_ end || P <- T],
             erlang:error(Err)
     end;
-await2([]) -> [].
+await([]) -> [].
 
 interpolate_cubic(X, A, B, C, D) ->
     B + 0.5 * X * (C - A + X * (2*A - 5*B + 4*C - D + X * (3*(B-C) + D - A))).
@@ -375,7 +379,7 @@ resample_pixels(IMG, NewWidth, NewHeight) ->
 
     BytesPerChannel = IMG#erl_image.bytes_pp div NumChannels,
 
-    pmap2(fun(RowNum) ->
+    parallel_map(fun(RowNum) ->
                 YPos = (RowNum + 0.5) / NewHeight,
                 {Ay, By, Cy, Dy} = nearest_grid_points(YPos, IMG#erl_image.height),
                 {Arows, Brows, Crows, Drows} = {
