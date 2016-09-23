@@ -1,8 +1,8 @@
-%%% coding: latin-1
+%%% coding: utf-8
 %%% File    : gpsinfo.erl
-%%% Author  : Davide Marquês <nesrait@gmail.com>
+%%% Author  : Davide MarquÃªs <nesrait@gmail.com>
 %%% Description : Utils for decoding Exif GPSInfo tags
-%%% Created :  20 Aug 2009 by Davide Marquês <nesrai@gmail.com>
+%%% Created :  20 Aug 2009 by Davide MarquÃªs <nesrai@gmail.com>
 
 -module(erl_img_gpsinfo).
 
