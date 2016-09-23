@@ -22,7 +22,7 @@
                  ImageSize,XRes,YRes,ColorsUsed,ImportantColors),
         HSize:32/little,
         Width:32/little,
-        Height:32/little,
+        Height:32/signed-integer-little,
         Planes:16/little,
         BitCount:16/little,
         Compression:32/little,
@@ -43,14 +43,22 @@ extensions() -> [".bmp" ].
 read_info(Fd) ->
     case file:read(Fd, 54) of
         {ok, << ?BMP_HEADER(_Size,_Offset),
-                ?BMP_INFO(_,Width,Height,Planes,_BitCount,
+                ?BMP_INFO(_,Width,Height,Planes,BitCount,
                           Compression,_,_,_,_,_) >> } ->
+            BytesPerPix = BitCount div 8,
+            Format = 
+                case BytesPerPix of
+                    1 -> palette8;
+                    2 -> r5g6b5;
+                    3 -> b8g8r8;
+                    4 -> b8g8r8a8
+                end,
             {ok, #erl_image  { type      = ?MODULE,
                              width     = Width,
                              height    = Height,
                              depth     = Planes,
-                             format    = b8g8r8,
-                             bytes_pp  = 3,
+                             format    = Format,
+                             bytes_pp  = BytesPerPix,
                              alignment = 4,
                              order = left_to_right,
                              attributes = [{'Compression',Compression}]
@@ -89,7 +97,8 @@ write(_Fd, _IMG) ->
 read_pixels(Fd, IMG, RowFun, St0) ->
     Width = IMG#erl_image.width,
     Height = IMG#erl_image.height,
-    RowLength =  Width*3 + ?PAD_Len(Width*3, 4),
+    BytesPerPix = IMG#erl_image.bytes_pp,
+    RowLength =  Width*BytesPerPix + ?PAD_Len(Width*BytesPerPix, 4),
     PIX = #erl_pixmap { width = Width, height = Height,
                         format = IMG#erl_image.format },
     read_pixels(Fd, PIX, 0, Height, RowLength, RowFun, St0).
@@ -101,7 +110,12 @@ read_pixels(Fd, PIX, Ri, NRows, BytesPerRow, RowFun, St) ->
     case file:read(Fd, BytesPerRow) of
         {ok,Row} ->
             St1 = RowFun(PIX, Row, Ri, St),
-            read_pixels(Fd, PIX, Ri+1, NRows, BytesPerRow, RowFun, St1);
+            read_pixels(Fd, PIX, next_row_index(Ri, NRows), NRows, BytesPerRow, RowFun, St1);
         Error ->
             Error
     end.
+
+next_row_index(Ri, NRows) when NRows < 0 ->
+    Ri - 1;
+next_row_index(Ri, NRows) when NRows > 0 ->
+    Ri + 1.

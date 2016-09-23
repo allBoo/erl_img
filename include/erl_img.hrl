@@ -65,7 +65,7 @@
           format,       %% pixel format:
                         %%  gray4, gray8,
                         %%  palette4, palette8
-                        %%  b8g8r8 r8g8b8 r8g8b8a8
+                        %%  b8g8r8 r8g8b8 r8g8b8a8 r5g6b5
           width,        %% Image width
           height,       %% Image height
           depth,        %% Image depth
